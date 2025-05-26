@@ -1,0 +1,1 @@
+Project to test out OpenAI python sdk
