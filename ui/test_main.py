@@ -2,7 +2,8 @@ from fastapi import FastAPI
 from fastapi import Request
 from pathlib import Path
 from dicttoxml import dicttoxml
-from fastapi.responses import Response, HTMLResponse
+from fastapi.responses import Response, HTMLResponse, JSONResponse
+from fastapi import Query
 
 app = FastAPI()
 
@@ -38,6 +39,38 @@ def auto_html():
 @app.get("/html-auto3")
 def auto_html():
     return HTMLResponse("<h1>This is HTML</h1>")
+
+@app.get("/search")
+def search(q: str = Query(..., min_length=3, max_length=50)):
+    return {"query": q}
+
+from pydantic import BaseModel
+
+class User(BaseModel):
+    name: str
+    age: int
+
+@app.get("/profile", response_model=User)
+def profile():
+    return {"name": "Alice", "age": 30, "password": "secret"}
+
+from fastapi import HTTPException
+
+@app.get("/user_login/{username}")
+def get_user(username: str):
+    if username != "admin":
+        raise HTTPException(status_code=404, detail="User not found")
+    return {"username": username}
+
+@app.get("/user_login_v2/{username}")
+def get_user(username: str):
+    if username != "admin":
+        raise HTTPException(status_code=403, detail="User not found", headers={"X-Error": "You are not authorized"})
+    return {"username": username}
+
+@app.get("/custom")
+def custom_response():
+    return JSONResponse(content={"msg": "Welcome to the App"}, status_code=202, headers={"X-Custom": "App reached"})
 
 if __name__ == "__main__":
     import uvicorn
