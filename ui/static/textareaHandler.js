@@ -1,3 +1,19 @@
+export function handleTextareaInput(textarea) {
+    // Adjust the height of the textarea as the user types
+    textarea.addEventListener('input', () => {
+        textarea.style.height = 'auto';
+        textarea.style.height = textarea.scrollHeight + 'px';
+    });
+
+    // Handle "Enter" key to send message without newline
+    textarea.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();  // Prevent newline
+            sendMessage(textarea);  // Call sendMessage when Enter is pressed
+        }
+    });
+}
+
 // --- TEXTAREA HANDLING ---
 export function sendMessage(textarea) {
     const message = textarea.value.trim();
@@ -46,21 +62,5 @@ export function sendMessage(textarea) {
     })
     .catch(error => {
         console.error('Error:', error);
-    });
-}
-
-export function handleTextareaInput(textarea) {
-    // Adjust the height of the textarea as the user types
-    textarea.addEventListener('input', () => {
-        textarea.style.height = 'auto';
-        textarea.style.height = textarea.scrollHeight + 'px';
-    });
-
-    // Handle "Enter" key to send message without newline
-    textarea.addEventListener('keydown', function (e) {
-        if (e.key === 'Enter' && !e.shiftKey) {
-            e.preventDefault();  // Prevent newline
-            sendMessage(textarea);  // Call sendMessage when Enter is pressed
-        }
     });
 }
